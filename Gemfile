@@ -4,7 +4,14 @@ gemspec
 
 gem 'pry-byebug'
 
-group :test, :development do
+group :development do
+  gem 'brakeman', require: false
   gem 'rubocop', require: false
   gem 'overcommit'
+  gem 'reek', require: false
+end
+
+group :test do
+  gem 'mutant'
+  gem 'mutant-rspec'
 end

@@ -15,17 +15,28 @@
 #
 # Uncomment the following lines to make the configuration take effect.
 
+CommitMsg:
+  HardTabs:
+    enabled: true
+
 PreCommit:
   Rubocop:
     enabled: true
     on_warn: fail
-
+  HardTabs:
+    enabled: true
+  Reek:
+    enabled: true
+  LocalPathsInGemfile:
+    enabled: true
   TrailingWhitespace:
     enabled: true
+  BundleCheck:
+    enabled: true
 
-#PostCheckout:
-#  ALL: # Special hook name that customizes all hooks of this type
-#   quiet: true # Change all post-checkout hooks to only display output on failure
-#
-#  IndexTags:
-#    enabled: true # Generate a tags file with `ctags` each time HEAD changes
+PostCheckout:
+  SubmoduleStatus:
+    enabled: true
+  GitGuilt:
+    enabled: true
+
