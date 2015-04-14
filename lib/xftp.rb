@@ -1,5 +1,5 @@
-require "xftp/version"
+require 'xftp/version'
 
+# The XFTP entry point (facade).
 module XFTP
-  # Your code goes here...
 end

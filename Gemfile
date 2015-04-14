@@ -5,6 +5,6 @@ gemspec
 gem 'pry-byebug'
 
 group :test, :development do
-  gem 'pre-commit'
+  gem 'rubocop', require: false
+  gem 'overcommit'
 end
-

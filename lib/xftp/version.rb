@@ -1,4 +1,5 @@
-module Xftp
+module XFTP
+  # Gem version builder module
   module VERSION
     MAJOR = 0
     MINOR = 1
