@@ -1,0 +1,4 @@
+---
+en:
+  errors:
+    missed_config_option: 'config option %{key} is not supplied'

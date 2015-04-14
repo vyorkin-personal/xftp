@@ -1,0 +1,4 @@
+---
+ru:
+  errors:
+    missed_config_option: 'не указан параметр %{key}'
