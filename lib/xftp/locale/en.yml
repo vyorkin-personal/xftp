@@ -1,4 +1,5 @@
 ---
 en:
   errors:
-    missed_config_option: 'config option %{key} is not supplied'
+    missing_setting: 'missing setting %{key}'
+    not_supported_protocol: 'protocol %{protocol} is not supported'

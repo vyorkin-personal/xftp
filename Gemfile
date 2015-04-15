@@ -2,13 +2,15 @@ source 'https://rubygems.org'
 
 gemspec
 
-gem 'pry-byebug'
+group :development, :test do
+  gem 'pry-byebug'
+end
 
 group :development do
+  gem 'reek', require: false
   gem 'brakeman', require: false
   gem 'rubocop', require: false
   gem 'overcommit'
-  gem 'reek', require: false
 end
 
 group :test do

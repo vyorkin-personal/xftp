@@ -1,20 +1,22 @@
-# 1) it evaluates the given block
-# 2) it sets connection options
-# 3) raises an error if required options are not supplied
+require_relative 'support/shared/contexts/connection_settings'
+
 RSpec.describe XFTP do
   it 'has a version number' do
     expect(XFTP::VERSION::STRING).not_to be nil
   end
 
   describe '.start' do
-    subject { -> { described_class.start({}) } }
+    include_context 'valid connection settings'
+    subject { ->(b) { XFTP.start(settings, &b) } }
 
-    context 'when host option is not supplied' do
-      it { is_expected.to raise_error I18n.t('errors.missed_config_option', key: :host) }
+    context 'given valid ftp connection settings' do
+      let(:settings) { valid_connection_settings_for(:ftp) }
+      it { is_expected.to yield_with_args(XFTP::Session::FTP) }
     end
 
-    context 'given valid options' do
-      it { is_expected.not_to raise_error }
+    context 'given valid sftp connection settings' do
+      let(:settings) { valid_connection_settings_for(:ftps) }
+      it { is_expected.to yield_with_args(XFTP::Session::SFTP) }
     end
   end
 end
