@@ -1,4 +1,4 @@
-require_relative 'support/shared/contexts/connection_settings'
+require_relative 'support/shared/examples/xftp_facade'
 
 RSpec.describe XFTP do
   it 'has a version number' do
@@ -6,17 +6,12 @@ RSpec.describe XFTP do
   end
 
   describe '.start' do
-    include_context 'valid connection settings'
-    subject { ->(b) { XFTP.start(settings, &b) } }
-
     context 'given valid ftp connection settings' do
-      let(:settings) { valid_connection_settings_for(:ftp) }
-      it { is_expected.to yield_with_args(XFTP::Session::FTP) }
+      it_behaves_like 'xftp facade', :ftp, port: 21_213
     end
 
     context 'given valid sftp connection settings' do
-      let(:settings) { valid_connection_settings_for(:ftps) }
-      it { is_expected.to yield_with_args(XFTP::Session::SFTP) }
+      it_behaves_like 'xftp facade', :ftps
     end
   end
 end

@@ -22,12 +22,13 @@ module XFTP
   end
 
   # Initiates a new session
-  # @param [Hash] connection settings
+  # @param [Hash] settings the connection settings
   # @option settings [String] :url the host url including scheme
   # @option settings [Hash<Symbol, String>] :credentials
   # @raise [XFTP::MissingArgument] if some of the required settings are missing
   # @raise [XFTP::NotSupportedProtocol] if protocol detected by schema is not supported
-  def self.start(settings)
-    yield SessionFactory.new.create(settings)
+  def self.start(settings, &block)
+    session = SessionFactory.create(settings)
+    session.start(&block)
   end
 end

@@ -13,7 +13,6 @@ module XFTP
         missing_setting!(:url) unless settings[:url].present?
 
         credentials = settings[:credentials]
-
         if credentials.present?
           validate_credentials!(credentials)
         else

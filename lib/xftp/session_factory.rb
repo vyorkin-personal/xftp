@@ -1,5 +1,3 @@
-require 'uri'
-
 require 'xftp/session/ftp'
 require 'xftp/session/sftp'
 
@@ -14,15 +12,19 @@ module XFTP
       ftps: XFTP::Session::SFTP
     }
 
-    def initialize
-      @validator = Validator::ConnectionSettings.new
-    end
-
     # Creates a session adapter
     # @param [Hash] settings the connection settings
     # @return [XFTP::Session::FTP, XFTP::Session::FTPS] adapter instance
     # @raise [XFTP::MissingArgument] if some of the required settings are missing
     # @see XFTP::Validator::ConnectionSettings
+    def self.create(settings)
+      new(Validator::ConnectionSettings.new).create(settings)
+    end
+
+    def initialize(settings_validator)
+      @validator = settings_validator
+    end
+
     def create(settings)
       @validator.validate!(settings)
       klass = adapter_class(settings)
@@ -34,7 +36,7 @@ module XFTP
     def adapter_class(settings)
       uri = URI.parse(settings[:url])
       scheme = uri.scheme.to_sym
-      not_supported_protocol!(scheme) unless SCHEME_ADAPTERS.keys.include?(protocol)
+      not_supported_protocol!(scheme) unless SCHEME_ADAPTERS.keys.include?(scheme)
       SCHEME_ADAPTERS[scheme]
     end
   end
