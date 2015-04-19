@@ -12,32 +12,22 @@ module XFTP
       ftps: XFTP::Session::SFTP
     }
 
-    # Creates a session adapter
+    # Creates a session adapter object
+    # @param [URI] uri the remote uri
     # @param [Hash] settings the connection settings
     # @return [XFTP::Session::FTP, XFTP::Session::FTPS] adapter instance
-    # @raise [XFTP::MissingArgument] if some of the required settings are missing
-    # @see XFTP::Validator::ConnectionSettings
-    def self.create(settings)
-      new(Validator::ConnectionSettings.new).create(settings)
+    def create(uri, settings)
+      klass = adapter_class(uri.scheme)
+      klass.new(uri, settings)
     end
 
-    def initialize(settings_validator)
-      @validator = settings_validator
-    end
-
-    def create(settings)
-      @validator.validate!(settings)
-      klass = adapter_class(settings)
-      klass.new(settings)
-    end
+    private
 
     # Detects a session adapter class
+    # @param [String, Symbol] scheme the uri scheme
     # @return [Class] session adapter class
-    def adapter_class(settings)
-      uri = URI.parse(settings[:url])
-      scheme = uri.scheme.to_sym
-      not_supported_protocol!(scheme) unless SCHEME_ADAPTERS.keys.include?(scheme)
-      SCHEME_ADAPTERS[scheme]
+    def adapter_class(scheme)
+      SCHEME_ADAPTERS[scheme.to_sym] || not_supported_protocol(scheme)
     end
   end
 end

@@ -1,5 +1,5 @@
-RSpec.describe XFTP::Validator::ConnectionSettings do
-  subject { -> { XFTP::Validator::ConnectionSettings.new.validate!(settings) } }
+RSpec.describe XFTP::Validator::Settings do
+  subject { -> { XFTP::Validator::Settings.new.call!(settings) } }
 
   context 'given valid connection settings with SFTP url scheme' do
     let(:settings) { { url: 'ftps://example.com', credentials: { login: 'login', password: 'password' } } }

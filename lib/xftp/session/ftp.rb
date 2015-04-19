@@ -1,6 +1,8 @@
-require 'xftp/session/base'
+require 'active_support/core_ext/hash/deep_merge'
 require 'forwardable'
 require 'net/ftp'
+
+require 'xftp/session/base'
 
 module XFTP
   module Session
@@ -9,47 +11,18 @@ module XFTP
     class FTP < Base
       extend Forwardable
 
-      def_delegators :@instance, :chdir, :mkdir, :rmdir
+      # Delegate methods which have the same method signature
+      # directly to Net::FTP session
+      def_delegators :@ftp, :chdir, :mkdir, :rmdir, :close
 
-      # Creates and returns a new `FTP` session instance
-      # @param [Hash] settings the additional `FTP` connection settings
-      # @option settings [Integer] :port the port to use
-      def initialize(settings = {})
+      def initialize(uri, settings = {})
         super
-        @port = settings.delete(:port).presence || Net::FTP::FTP_PORT
+
+        @port ||= Net::FTP::FTP_PORT
         @ftp = Net::FTP.new
-      end
 
-      # Opens a new FTP connection
-      def open
-        @ftp.binary = true
-        @ftp.passive = true
-        @ftp.connect(@uri.host, @port)
-        @ftp.login(@login, @password)
-      end
-
-      # Closes FTP connection
-      def close
-        @ftp.close
-      end
-
-      # Changes the current (remote) working directory
-      # @param [String] path the relative (remote) path
-      def chdir(path)
-        @ftp.chdir path
-      end
-
-      # Creates a remote directory
-      # @param [String] dirname the name of new directory
-      #   relative to the current (remote) working directory
-      def mkdir(dirname)
-        @ftp.mkdir dirname
-      end
-
-      # Removes the remote directory
-      # @param [String] dirname the name of directory to be removed
-      def rmdir(dirname)
-        @ftp.rmdir dirname
+        options = XFTP.config.ftp.deep_merge(@settings)
+        options.each { |key, val| @ftp.public_send("#{key}=", val) }
       end
 
       # Renames (moves) a file on the server
@@ -59,13 +32,19 @@ module XFTP
         @ftp.rename(from, to)
       end
 
-      # rubocop:disable Lint/UnusedMethodArgument
-      # :reek:UnusedParameters
-      # For more info (see Dir#glob), it's almost of the same nature
-      def glob(pattern)
-        fail NotImplementedError
+      # @see XFTP::Operations::FTP::Glob
+      def glob(pattern, &callback)
+        Operations::Glob.new(@ftp).call(pattern, &callback)
       end
-      # rubocop:enable Lint/UnusedMethodArgument
+
+      protected
+
+      # Opens a new FTP connection and
+      # authenticates on the remote server
+      def open
+        @ftp.connect(@uri.host, @port)
+        @ftp.login(@credentials.login, @credentials.password) if @cre
+      end
     end
   end
 end

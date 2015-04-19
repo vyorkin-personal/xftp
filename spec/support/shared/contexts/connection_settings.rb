@@ -1,4 +1,4 @@
-RSpec.shared_context 'valid connection settings' do
+RSpec.shared_context 'connection settings' do
   def valid_connection_settings_for(scheme, options = {})
     {
       url: "#{scheme}://example.com",

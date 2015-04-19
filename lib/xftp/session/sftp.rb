@@ -1,6 +1,7 @@
-require 'xftp/session/base'
 require 'net/ssh'
 require 'net/sftp'
+
+require 'xftp/session/base'
 
 module XFTP
   module Session
@@ -12,34 +13,16 @@ module XFTP
       # Default flags for glob operation
       GLOB_OPERATION_FLAGS = File::FNM_EXTGLOB
 
-      # Creates and returns a new `SFTP` session instance
-      # @param [Hash] settings the additional `SFTP` connection settings
-      # @option settings [Hash] :ssh the ssh connection options
-      def initialize(settings = {})
+      def initialize(uri, settings = {})
         super
-        user_options = settings.delete(:ssh) || {}
-        options = user_options.merge(password: @password)
-        @ssh = Net::SSH.start(@uri.host, @login, options)
-        @sftp = Net::SFTP::Session.new @ssh
+
         @path = Pathname '.'
-      end
 
-      # Opens a new SFTP connection
-      def open
-        @sftp.connect!
-      rescue Object => anything
-        begin
-          @ssh.shutdown!
-        rescue ::Exception # rubocop:disable Lint/HandleExceptions, Lint/RescueException
-          # swallow exceptions that occur while trying to shutdown
-        end
+        @settings.merge!(password: @credentials[:password])
+        options = XFTP.config.sftp.deep_merge(@settings)
 
-        raise anything
-      end
-
-      # Closes SFTP (SSH) connection
-      def close
-        @sftp.session.close
+        @ssh = Net::SSH.start(@uri.host, @credentials[:login], options)
+        @sftp = Net::SFTP::Session.new @ssh
       end
 
       # Changes the current (remote) working directory
@@ -77,6 +60,26 @@ module XFTP
       #   Default value is `File::FNM_EXTGLOB`
       def glob(pattern, flags = GLOB_OPERATION_FLAGS)
         @sftp.dir.glob(@path.to_s, pattern, flags)
+      end
+
+      protected
+
+      # Opens a new SFTP connection
+      def open
+        @sftp.connect!
+      rescue Object => anything
+        begin
+          @ssh.shutdown!
+        rescue ::Exception # rubocop:disable Lint/HandleExceptions, Lint/RescueException
+          # swallow exceptions that occur while trying to shutdown
+        end
+
+        raise anything
+      end
+
+      # Closes SFTP (SSH) connection
+      def close
+        @ssh.close
       end
 
       private
