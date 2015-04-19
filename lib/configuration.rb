@@ -36,14 +36,10 @@ module XFTP
 
     config_accessor :ssh do
       {
-        port: Net::SSH::Transport::Session::DEFAULT_PORT,
-        auth_methods: nil,
-        bind_address: nil,
-        compression: nil,
-        compression_level: nil,
-        config: true,
-        encryption: nil,
-        forward_agent: nil
+        keepalive: true,
+        keepalive_interval: 30,
+        forward_agent: true,
+        verbose: :error
       }
     end
   end

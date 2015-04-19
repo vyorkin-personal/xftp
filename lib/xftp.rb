@@ -1,9 +1,8 @@
-require 'active_support/core_ext/object/blank'
-require 'active_support/core_ext/object/deep_dup'
+require 'active_support/core_ext/object'
 
 require 'xftp/version'
 require 'xftp/errors'
-require 'xftp/validator/connection_settings'
+require 'xftp/validator/settings'
 require 'xftp/session_factory'
 
 require_relative 'initializers/i18n'
