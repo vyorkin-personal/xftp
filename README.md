@@ -11,7 +11,9 @@ gem 'xftp'
 
 or
 
+```
 $ gem install xftp
+```
 
 ## Usage
 
@@ -21,13 +23,9 @@ XFTP.start('ftps://hostname', login: 'login', password: 'pass') do |x|
     x.mkdir 'new-remote-dir'
     x.rmdir 'dir-to-remove'
 
-    x.glob '**/*.{xls,xlsx}' do |io|
-        # process entry
-    end
-
-    x.download '**/*.{xls,xlsx}', to: 'local-dst-path' do |file|
+    x.glob '**/*.{xls,xlsx}' do |entry|
         # process file
-        x.move file, to: 'remote-archive-path'
+        x.move entry.remote, to: File.join('remote-archive-path', entry.remote)
     end
 end
 ```

@@ -29,7 +29,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'simplecov', '~> 0.9.2'
   spec.add_development_dependency 'fake_ftp', '~> 0.1.1'
 
-  spec.add_runtime_dependency 'i18n', '~> 0.7.0'
+  spec.add_runtime_dependency 'i18n', '~> 0.6.0'
   spec.add_runtime_dependency 'net-sftp', '~> 2.1.2'
   spec.add_runtime_dependency 'activesupport', '~> 3.2.21'
 end
