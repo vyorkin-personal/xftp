@@ -20,7 +20,22 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+XFTP.start('ftps://hostname', credentials) do |x|
+    x.chdir 'remote-src-path'
+    x.mkdir 'new-remote-dir'
+    x.rmdir 'dir-to-remove'
+
+    x.glob '**/*.{xls,xlsx}' do |io|
+        # process entry
+    end
+
+    x.download '**/*.{xls,xlsx}', to: 'local-dst-path' do |file|
+        # process file
+        x.move file, to: 'remote-archive-path'
+    end
+end
+```
 
 ## Development
 
