@@ -6,14 +6,13 @@ module XFTP
     # @abstract Base class for xftp session adapters
     # @api private
     class Base
-      attr_reader :uri, :settings
+      attr_reader :uri, :credentials, :settings
 
       # Creates a session adapter instance
       # @param [URI] uri the remote uri
       # @param [Hash] settings the adapter connection settings
       def initialize(uri, settings = {})
         @uri = uri
-        @port = uri.port || settings.delete(:port)
         @credentials = settings.delete(:credentials) || {}
         @settings = settings
       end

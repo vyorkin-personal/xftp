@@ -15,11 +15,15 @@ module XFTP
       # directly to Net::FTP session
       def_delegators :@ftp, :chdir, :mkdir, :rmdir, :close
 
+      # Creates an FTP session adapter instance
+      # @param [URI] uri the remote uri
+      # @param [Hash] settings the adapter connection settings
       def initialize(uri, settings = {})
         super
 
-        @port ||= Net::FTP::FTP_PORT
         @ftp = Net::FTP.new
+        @port = uri.port || settings.delete(:port) || Net::FTP::FTP_PORT
+        @credentials[:login] ||= 'anonymous'
 
         options = XFTP.config.ftp.deep_merge(@settings)
         options.each { |key, val| @ftp.public_send("#{key}=", val) }
@@ -43,7 +47,7 @@ module XFTP
       # authenticates on the remote server
       def open
         @ftp.connect(@uri.host, @port)
-        @ftp.login(@credentials.login, @credentials.password) if @cre
+        @ftp.login(@credentials[:login], @credentials[:password])
       end
     end
   end

@@ -1,32 +1,25 @@
-# require_relative 'support/shared/examples/xftp_facade'
-
 RSpec.describe XFTP do
   it 'has a version number' do
     expect(XFTP::VERSION::STRING).not_to be nil
   end
 
   describe '.start' do
-    it 'zbs' do
-      settings = {
-        url: 'ftp://example.com',
-        credentials: {
-          login: 'login',
-          password: 'password'
-        }
-      }
+    subject { ->(callback) { XFTP.start(url, {}, &callback) } }
+    let(:scheme_adapters) { { ftp: double('ftp'), ftps: double('sftp') } }
+    let(:sessions) { { ftp: double('ftp'), ftps: double('sftp') } }
 
-      session = instance_double('XFTP::Session::Base')
-      expect(session).to receive(:start)
-      callback = ->(s) { puts s }
-      XFTP.start(settings, &callback)
+    before(:each) do
+      stub_const('XFTP::SCHEME_ADAPTERS', scheme_adapters)
+      scheme_adapters.each do |scheme, klass|
+        session = sessions[scheme]
+        allow(klass).to receive(:new).and_return(session)
+        allow(session).to receive(:start).and_yield(session)
+      end
     end
 
-    # context 'given valid ftp connection settings' do
-    #   it_behaves_like 'xftp facade', :ftp, port: 21_213
-    # end
-
-    # context 'given valid sftp connection settings' do
-    #   it_behaves_like 'xftp facade', :ftps
-    # end
+    context 'given FTP URI and connection settings without credentials' do
+      let(:url) { 'ftp://example.com' }
+      it { is_expected.to yield_with_args(sessions[:ftp]) }
+    end
   end
 end

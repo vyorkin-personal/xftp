@@ -13,6 +13,9 @@ module XFTP
       # Default flags for glob operation
       GLOB_OPERATION_FLAGS = File::FNM_EXTGLOB
 
+      # Creates an SFTP session adapter instance
+      # @param [URI] uri the remote uri
+      # @param [Hash] settings the adapter connection settings
       def initialize(uri, settings = {})
         super
 
@@ -21,6 +24,7 @@ module XFTP
         @settings.merge!(password: @credentials[:password])
         options = XFTP.config.sftp.deep_merge(@settings)
 
+        # TODO: Is it possible to call Net::SSH.start in #open
         @ssh = Net::SSH.start(@uri.host, @credentials[:login], options)
         @sftp = Net::SFTP::Session.new @ssh
       end
