@@ -32,7 +32,7 @@ module XFTP
       # Renames (moves) a file on the server
       # @param [String] from the path to move from
       # @param [String] to the new path to move to
-      def move(from, to)
+      def move(from, to:)
         @ftp.rename(from, to)
       end
 

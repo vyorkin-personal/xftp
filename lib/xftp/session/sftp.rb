@@ -47,7 +47,7 @@ module XFTP
       # Renames (moves) a file on the server
       # @param [String] from the path to move from
       # @param [String] to the path to move to
-      def move(from, to, flags = RENAME_OPERATION_FLAGS)
+      def move(from, to:, flags: RENAME_OPERATION_FLAGS)
         @sftp.rename(from, to, flags)
       end
 
@@ -56,7 +56,7 @@ module XFTP
       #   the the current working directory
       # @param [Integer] (see File.fnmatch) for the meaning of the flags parameter.
       #   Default value is `File::FNM_EXTGLOB`
-      def glob(pattern, flags = GLOB_OPERATION_FLAGS)
+      def glob(pattern, flags: GLOB_OPERATION_FLAGS)
         @sftp.dir.glob(@path.to_s, pattern, flags)
       end
 

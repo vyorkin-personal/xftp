@@ -1,27 +1,22 @@
 # xftp
 
-Unified interface for ftp/sftp
+Unified interface for ftp/sftp.
+Protocol is selected by url scheme.
 
 ## Installation
-
-Add this line to your application's Gemfile:
 
 ```ruby
 gem 'xftp'
 ```
 
-And then execute:
+or
 
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install xftp
+$ gem install xftp
 
 ## Usage
 
 ```ruby
-XFTP.start('ftps://hostname', credentials) do |x|
+XFTP.start('ftps://hostname', login: 'login', password: 'pass') do |x|
     x.chdir 'remote-src-path'
     x.mkdir 'new-remote-dir'
     x.rmdir 'dir-to-remove'
