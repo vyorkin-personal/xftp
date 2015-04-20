@@ -18,15 +18,9 @@ module XFTP
       # @param [Hash] settings the adapter connection settings
       def initialize(uri, settings = {})
         super
-
         @path = Pathname '.'
-
         @settings.merge!(password: @credentials[:password])
-        options = XFTP.config.sftp.deep_merge(@settings)
-
-        # TODO: Is it possible to call Net::SSH.start in #open
-        @ssh = Net::SSH.start(@uri.host, @credentials[:login], options)
-        @sftp = Net::SFTP::Session.new @ssh
+        @options = XFTP.config.sftp.deep_merge(@settings)
       end
 
       # Changes the current (remote) working directory
@@ -70,7 +64,7 @@ module XFTP
 
       # Opens a new SFTP connection
       def open
-        @sftp.connect!
+        connect
       rescue Object => anything
         begin
           @ssh.shutdown!
@@ -87,6 +81,12 @@ module XFTP
       end
 
       private
+
+      def connect
+        @ssh = Net::SSH.start(@uri.host, @credentials[:login], @options)
+        @sftp = Net::SFTP::Session.new @ssh
+        @sftp.connect!
+      end
 
       # @return [String] a path name relative to the current working directory
       def pathname(relative)

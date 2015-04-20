@@ -1,4 +1,3 @@
-
 require 'xftp/dsl/block_evaluator'
 
 module XFTP
@@ -6,6 +5,8 @@ module XFTP
     # @abstract Base class for xftp session adapters
     # @api private
     class Base
+      include DSL::BlockEvaluator
+
       attr_reader :uri, :credentials, :settings
 
       # Creates a session adapter instance
