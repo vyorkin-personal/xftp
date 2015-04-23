@@ -20,13 +20,13 @@ module XFTP
         super
         @path = Pathname '.'
         @settings.merge!(password: @credentials[:password])
-        @options = XFTP.config.sftp.deep_merge(@settings)
+        @ssh_options = XFTP.config.ssh.deep_merge(@settings)
       end
 
       # Changes the current (remote) working directory
       # @param [String] path the relative (remote) path
       def chdir(path)
-        @path /= path
+        @path += path
       end
 
       # Creates a remote directory
@@ -57,7 +57,7 @@ module XFTP
       # @param [Integer] (see File.fnmatch) for the meaning of the flags parameter.
       #   Default value is `File::FNM_EXTGLOB`
       def glob(pattern, flags: GLOB_OPERATION_FLAGS)
-        @sftp.dir.glob(@path.to_s, pattern, flags)
+        @sftp.dir.glob(@path.to_s, pattern, flags) { |entry| yield entry.name }
       end
 
       protected
@@ -83,14 +83,14 @@ module XFTP
       private
 
       def connect
-        @ssh = Net::SSH.start(@uri.host, @credentials[:login], @options)
+        @ssh = Net::SSH.start(@uri.host, @credentials[:login], @ssh_options)
         @sftp = Net::SFTP::Session.new @ssh
         @sftp.connect!
       end
 
       # @return [String] a path name relative to the current working directory
       def pathname(relative)
-        (@path / relative).to_s
+        (@path + relative).to_s
       end
     end
   end

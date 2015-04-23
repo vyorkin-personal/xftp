@@ -18,7 +18,7 @@ $ gem install xftp
 ## Usage
 
 ```ruby
-XFTP.start('ftps://hostname', login: 'login', password: 'pass') do |x|
+XFTP.start('ftps://hostname', credentials: { login: 'login', password: 'pass' }) do |x|
     x.chdir 'remote-src-path'
     x.mkdir 'new-remote-dir'
     x.rmdir 'dir-to-remove'
