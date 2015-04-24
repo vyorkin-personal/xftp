@@ -1,5 +1,2 @@
 ---
 en:
-  errors:
-    missing_setting: 'missing setting %{key}'
-    not_supported_protocol: 'protocol %{protocol} is not supported'

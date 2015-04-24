@@ -1,5 +1,2 @@
 ---
 ru:
-  errors:
-    missed_config_option: 'не указан параметр подключения %{key}'
-    not_supported_protocol: 'протокол %{protocol} не поддерживается'

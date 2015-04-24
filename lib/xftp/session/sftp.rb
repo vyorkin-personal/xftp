@@ -19,7 +19,7 @@ module XFTP
       def initialize(uri, settings = {})
         super
         @path = Pathname '.'
-        @settings.merge!(password: @credentials[:password])
+        @settings[:password] = @credentials[:password]
         @ssh_options = XFTP.config.ssh.deep_merge(@settings)
       end
 
@@ -44,9 +44,16 @@ module XFTP
         entries.include? filename
       end
 
-      # @return [Boolean] `true` if the argument refers to a directory on the remote host
-      def directory?(dirname)
-        @sftp.file.directory? remote_path(dirname)
+      # @return [Boolean] `true` if the argument refers to
+      # a directory on the remote host
+      def directory?(path)
+        @sftp.file.directory? remote_path(path)
+      end
+
+      # @return [Boolean] `true` if the argument refers to
+      # a file on the remote host
+      def file?(path)
+        !directory?(path)
       end
 
       # Removes the remote directory

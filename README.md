@@ -23,9 +23,9 @@ XFTP.start('ftps://hostname', credentials: { login: 'login', password: 'pass' })
     x.mkdir 'new-remote-dir'
     x.rmdir 'dir-to-remove'
 
-    x.glob '**/*.{xls,xlsx}' do |entry|
-        # process file
-        x.move entry.remote, to: File.join('remote-archive-path', entry.remote)
+    x.glob '**/*.{xls,xlsx}' do |file|
+        x.download file
+        x.move file, to: File.join('remote-archive-path', file)
     end
 end
 ```

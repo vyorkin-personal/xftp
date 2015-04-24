@@ -22,7 +22,7 @@ module XFTP
         super
 
         @ftp = Net::FTP.new
-        @port = uri.port || settings.delete(:port) || Net::FTP::FTP_PORT
+        @port = settings.delete(:port) || uri.port || Net::FTP::FTP_PORT
         @credentials[:login] ||= 'anonymous'
 
         options = XFTP.config.ftp.deep_merge(@settings)
@@ -32,6 +32,22 @@ module XFTP
       # @return [Boolean] `true` if the argument refers to a directory on the remote host
       def exists?(dirname)
         entries.include? dirname
+      end
+
+      # @return [Boolean] `true` if the argument refers to
+      # a directory on the remote host
+      def directory?(path)
+        chdir path
+        chdir '..'
+        true
+      rescue
+        false
+      end
+
+      # @return [Boolean] `true` if the argument refers to
+      # a file on the remote host
+      def file?(path)
+        !directory(path)
       end
 
       # Renames (moves) a file on the server
@@ -63,8 +79,7 @@ module XFTP
 
       # @return [Array<String>] an array of filenames in the remote directory
       def files
-        # FIXME: This won't work in case of file name without extension
-        entries '*.*'
+        entries.select { |entry| file? entry }
       end
 
       # @param [String] pattern the wildcard search pattern
