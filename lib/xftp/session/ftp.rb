@@ -29,6 +29,11 @@ module XFTP
         options.each { |key, val| @ftp.public_send("#{key}=", val) }
       end
 
+      # @return [Boolean] `true` if the argument refers to a directory on the remote host
+      def exists?(dirname)
+        entries.include? dirname
+      end
+
       # Renames (moves) a file on the server
       # @param [String] from the path to move from
       # @param [String] to the new path to move to
@@ -36,15 +41,42 @@ module XFTP
         @ftp.rename(from, to)
       end
 
+      # Calls the block once for each entry in the current directory
+      # on the remote server and yields a filename to the block
+      def each_file
+        files.each { |filename| yield filename }
+      end
+
       # @see XFTP::Operations::FTP::Glob
       def glob(pattern, &callback)
         Operations::Glob.new(@ftp).call(pattern, &callback)
       end
 
+      # Initiates a download from remote to local, synchronously
+      # @param [String] from the source remote file name
+      # @param [String] to the target local file name
+      # @param [Integer] block_size the size of file chunk
+      # @see Net::FTP#get
+      def download(from, to: File.basename(from), block_size: Net::FTP::DEFAULT_BLOCKSIZE)
+        @ftp.get(from, to, block_size)
+      end
+
+      # @return [Array<String>] an array of filenames in the remote directory
+      def files
+        # FIXME: This won't work in case of file name without extension
+        entries '*.*'
+      end
+
+      # @param [String] pattern the wildcard search pattern
+      # @return [Array<String>] an array of entries (including directories)
+      #   in the remote directory
+      def entries(pattern = nil)
+        @ftp.nlst pattern
+      end
+
       protected
 
-      # Opens a new FTP connection and
-      # authenticates on the remote server
+      # Opens a new FTP connection and authenticates on the remote server
       def open
         @ftp.connect(@uri.host, @port)
         @ftp.login(@credentials[:login], @credentials[:password])
