@@ -47,7 +47,7 @@ module XFTP
       # @return [Boolean] `true` if the argument refers to
       # a file on the remote host
       def file?(path)
-        !directory(path)
+        !directory?(path)
       end
 
       # Renames (moves) a file on the server
