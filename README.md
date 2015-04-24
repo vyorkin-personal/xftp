@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/vyorkin/xftp.svg)](https://travis-ci.org/vyorkin/xftp)
+
 # xftp
 
 Unified interface for ftp/sftp.
