@@ -1,4 +1,5 @@
 require 'xftp/dsl/block_evaluator'
+require 'xftp/helper/logging'
 
 module XFTP
   module Session
@@ -6,6 +7,7 @@ module XFTP
     # @api private
     class Base
       include DSL::BlockEvaluator
+      include Helper::Logging
 
       attr_reader :uri, :credentials, :settings
 
@@ -21,9 +23,11 @@ module XFTP
       # Opens a new connection, evaluates the given block and closes the connection
       # @param [Proc] callback the callback to operate on a connection session
       def start(&callback)
+        log 'starting'
         open
         evaluate(&callback)
         close
+        log 'done'
       end
     end
   end

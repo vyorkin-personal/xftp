@@ -66,6 +66,7 @@ module XFTP
       # @param [String] from the path to move from
       # @param [String] to the path to move to
       def move(from, to:, flags: RENAME_OPERATION_FLAGS)
+        log "moving from #{from} to #{to}..."
         @sftp.rename!(remote_path(from), remote_path(to), flags)
       end
 
@@ -93,6 +94,7 @@ module XFTP
       # @param [Hash] options the download operation options
       # @see Net::SFTP::Operations::Download
       def download(from, to: File.basename(from), **options)
+        log "downloading file from #{from} to #{to}..."
         remote = remote_path(from)
         local = (Pathname.pwd + to).to_s
         @sftp.download!(remote, local, options)
@@ -126,15 +128,18 @@ module XFTP
 
       # Closes SFTP (SSH) connection
       def close
+        log 'closing connection'
         @ssh.close
       end
 
       private
 
       def connect
+        log 'opening connection...'
         @ssh = Net::SSH.start(@uri.host, @credentials[:login], @ssh_options)
         @sftp = Net::SFTP::Session.new @ssh
         @sftp.connect!
+        log 'connected'
       end
 
       # @return [String] a path name relative to the current working directory

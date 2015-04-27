@@ -25,7 +25,7 @@ module XFTP
 
     config_accessor :logging do
       default_logger = lambda do
-        logger = Logger.new(STDERR)
+        logger = Logger.new(STDOUT)
         logger.level = Logger::ERROR
       end
 

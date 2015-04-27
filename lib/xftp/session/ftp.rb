@@ -13,7 +13,7 @@ module XFTP
 
       # Delegate methods which have the same method signature
       # directly to Net::FTP session
-      def_delegators :@ftp, :chdir, :mkdir, :rmdir, :close
+      def_delegators :@ftp, :chdir, :mkdir, :rmdir
 
       # Creates an FTP session adapter instance
       # @param [URI] uri the remote uri
@@ -54,6 +54,7 @@ module XFTP
       # @param [String] from the path to move from
       # @param [String] to the new path to move to
       def move(from, to:)
+        log "moving from #{from} to #{to}..."
         @ftp.rename(from, to)
       end
 
@@ -74,6 +75,7 @@ module XFTP
       # @param [Integer] block_size the size of file chunk
       # @see Net::FTP#get
       def download(from, to: File.basename(from), block_size: Net::FTP::DEFAULT_BLOCKSIZE)
+        log "downloading file from #{from} to #{to}..."
         @ftp.get(from, to, block_size)
       end
 
@@ -93,8 +95,17 @@ module XFTP
 
       # Opens a new FTP connection and authenticates on the remote server
       def open
+        log 'opening connection...'
         @ftp.connect(@uri.host, @port)
+        log 'connected'
         @ftp.login(@credentials[:login], @credentials[:password])
+        log 'logging in...'
+      end
+
+      # Closes FTP connection
+      def close
+        log 'closing connection'
+        @ftp.close
       end
     end
   end

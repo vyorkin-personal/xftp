@@ -32,4 +32,5 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'i18n', '~> 0.6', '>= 0.6.0'
   spec.add_runtime_dependency 'net-sftp', '~> 2.1', '>= 2.1.2'
   spec.add_runtime_dependency 'activesupport', '~> 3.2', '>= 3.2.21'
+  spec.add_runtime_dependency 'colorize', '~> 0.7', '>= 0.7.7'
 end

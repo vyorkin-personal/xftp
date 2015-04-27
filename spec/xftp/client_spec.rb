@@ -12,12 +12,12 @@ RSpec.describe XFTP::Client do
 
   describe '.call' do
     context 'given uri with ftp scheme' do
-      let(:scheme) { 'ftp' }
+      let(:scheme) { :ftp }
       it { is_expected.to yield_with_args(scheme_adapters[scheme]) }
     end
 
     context 'given uri with ftps scheme' do
-      let(:scheme) { 'ftps' }
+      let(:scheme) { :ftps }
       it { is_expected.to yield_with_args(scheme_adapters[scheme]) }
     end
   end
