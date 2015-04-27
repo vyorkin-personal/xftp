@@ -24,8 +24,7 @@ module XFTP
     end
 
     config_accessor :logger do
-      rails_logger = -> { Rails.logger || default_logger.call }
-      defined?(Rails) ? rails_logger.call : Logger.new(STDOUT)
+      defined?(Rails) ? Rails.logger : Logger.new(STDOUT)
     end
 
     config_accessor :ftp do
