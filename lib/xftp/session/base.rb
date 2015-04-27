@@ -1,5 +1,5 @@
+require 'xftp/helpers/logging'
 require 'xftp/dsl/block_evaluator'
-require 'xftp/helper/logging'
 
 module XFTP
   module Session
@@ -7,7 +7,7 @@ module XFTP
     # @api private
     class Base
       include DSL::BlockEvaluator
-      include Helper::Logging
+      include Helpers::Logging
 
       attr_reader :uri, :credentials, :settings
 

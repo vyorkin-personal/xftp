@@ -23,20 +23,9 @@ module XFTP
       end
     end
 
-    config_accessor :logging do
-      default_logger = lambda do
-        logger = Logger.new(STDOUT)
-        logger.level = Logger::ERROR
-      end
-
+    config_accessor :logger do
       rails_logger = -> { Rails.logger || default_logger.call }
-      logger = defined?(Rails) ? rails_logger.call : default_logger.call
-
-      {
-        logger: logger,
-        verbose: false,
-        colorize: true
-      }
+      defined?(Rails) ? rails_logger.call : Logger.new(STDOUT)
     end
 
     config_accessor :ftp do
