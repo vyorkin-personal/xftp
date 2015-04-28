@@ -67,7 +67,7 @@ module XFTP
 
       # @see XFTP::Operations::FTP::Glob
       def glob(pattern, &callback)
-        Operations::Glob.new(@ftp).call(pattern, &callback)
+        Operations::FTP::Glob.new(@ftp).call(pattern, &callback)
       end
 
       # Initiates a download from remote to local, synchronously
