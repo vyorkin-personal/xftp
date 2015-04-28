@@ -3,7 +3,7 @@ module XFTP
   module VERSION
     MAJOR = 0
     MINOR = 3
-    PATCH = 1
+    PATCH = 2
     SUFFIX = ''
 
     NUMBER = [MAJOR, MINOR, PATCH].compact.join('.')
