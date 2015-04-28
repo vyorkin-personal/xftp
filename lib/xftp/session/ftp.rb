@@ -3,6 +3,7 @@ require 'forwardable'
 require 'net/ftp'
 
 require 'xftp/session/base'
+require 'xftp/operations/ftp/glob'
 
 module XFTP
   module Session
