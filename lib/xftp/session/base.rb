@@ -29,6 +29,12 @@ module XFTP
         close
         log 'done'
       end
+
+      protected
+
+      def ensure_relative_path!(operation, path)
+        fail ArgumentError, "Absolute path can't be specified for `#{operation}`" if Pathname.new(path).absolute?
+      end
     end
   end
 end

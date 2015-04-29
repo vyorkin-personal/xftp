@@ -8,6 +8,31 @@ module XFTP
     # SFTP session adapter
     # @api private
     class SFTP < Base
+      # Helper class for progress monitoring
+      class ProgressHandler
+        include Helpers::Logging
+
+        def on_open(_downloader, file)
+          log "starting download: #{file.remote} -> #{file.local} (#{file.size} bytes)"
+        end
+
+        def on_get(_downloader, file, offset, data)
+          log "writing #{data.length} bytes to #{file.local} starting at #{offset}"
+        end
+
+        def on_close(_downloader, file)
+          log "finished with #{file.remote}"
+        end
+
+        def on_mkdir(_downloader, path)
+          log "creating directory #{path}"
+        end
+
+        def on_finish(_downloader)
+          log 'done'
+        end
+      end
+
       # Default flags for rename operation
       RENAME_OPERATION_FLAGS = 0x0004
       # Default flags for glob operation
@@ -26,6 +51,7 @@ module XFTP
       # Changes the current (remote) working directory
       # @param [String] path the relative (remote) path
       def chdir(path)
+        ensure_relative_path! :chdir, path
         @path += path
       end
 
@@ -35,7 +61,15 @@ module XFTP
       # @param [Hash] attrs the attributes of new directory
       #   supported by the the version of SFTP protocol in use
       def mkdir(dirname, attrs = {})
+        ensure_relative_path! :mkdir, path
         @sftp.mkdir!(remote_path(dirname), attrs)
+      end
+
+      # Removes the remote directory
+      # @param [String] dirname the name of directory to be removed
+      def rmdir(dirname)
+        ensure_relative_path! :rmdir, path
+        @sftp.rmdir! remote_path(dirname)
       end
 
       # @return [Boolean] `true` if the file exists
@@ -47,6 +81,7 @@ module XFTP
       # @return [Boolean] `true` if the argument refers to
       # a directory on the remote host
       def directory?(path)
+        ensure_relative_path! :directory?, path
         @sftp.file.directory? remote_path(path)
       end
 
@@ -54,12 +89,6 @@ module XFTP
       # a file on the remote host
       def file?(path)
         !directory?(path)
-      end
-
-      # Removes the remote directory
-      # @param [String] dirname the name of directory to be removed
-      def rmdir(dirname)
-        @sftp.rmdir! remote_path(dirname)
       end
 
       # Renames (moves) a file on the server
@@ -77,6 +106,21 @@ module XFTP
           filename = entry.name
           yield filename unless directory? filename
         end
+      end
+
+      # Calls the block once for each entry in the current directory
+      # on the remote server and (asynchronously) yields a filename and `StringIO` object to the block
+      def each_io
+        each_file do |filename|
+          io = get filename
+          yield filename, io
+        end
+      end
+
+      # Downloads file into IO object
+      # @return [StringIO] the remote file data
+      def get(filename)
+        @sftp.download!(remote_path(filename), nil, progress: ProgressHandler)
       end
 
       # For more info (see Dir#glob), it's almost of the same nature
@@ -105,8 +149,7 @@ module XFTP
         entries.reject { |filename| directory? filename }
       end
 
-      # @return [Array<String>] an array of entries (including directories)
-      #   in the remote directory
+      # @return [Array<String>] an array of entries (including directories) in the remote directory
       def entries
         @sftp.dir.entries(@path.to_s).map(&:name)
       end

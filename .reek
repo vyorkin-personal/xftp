@@ -1,3 +1,15 @@
 ---
+FeatureEnvy:
+  exclude:
+    - "XFTP::Session::SFTP::ProgressHandler#on_open"
+
+DataClump:
+  exclude:
+    - "XFTP::Session::SFTP::ProgressHandler"
+
+LongParameterList:
+  exclude:
+    - "XFTP::Session::SFTP::ProgressHandler#on_get"
+
 PrimaDonnaMethod:
   enabled: false
