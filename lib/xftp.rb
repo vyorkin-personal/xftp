@@ -15,6 +15,17 @@ module XFTP
     @configuration ||= Configuration.new
   end
 
+  # Calls the given block using temporary configuration
+  # :reek:TooManyStatements
+  def self.using(logger: config.logger, ftp: config.ftp, ssh: config.ssh)
+    snapshot = config.clone
+    config.logger = logger
+    config.ftp = ftp
+    config.ssh = ssh
+    yield
+    @configuration = snapshot
+  end
+
   # For a block { |config| ... }
   # @yield the (see #config)
   def self.configure
