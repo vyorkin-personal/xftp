@@ -33,11 +33,11 @@ XFTP.start('ftps://hostname', credentials: { login: 'login', password: 'pass' })
 end
 ```
 
-Connection as anon with emtpy password, checking remote dir existence, globbing and getting `StringIO`'s:
+Connection as anonymous with emtpy password, checking remote dir existence, globbing and getting `StringIO`'s:
 ```ruby
 XFTP.start('ftp://hostname') do |x|
     x.mkdir 'some-dir' unless x.exist? 'some-dir'
-    x.glob '*.cvs' do |filename|
+    x.glob '*.csv' do |filename|
         io = x.get filename
     end
 end
