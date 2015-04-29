@@ -17,8 +17,9 @@ or
 $ gem install xftp
 ```
 
-## Usage
+## Usage examples
 
+Basic example:
 ```ruby
 XFTP.start('ftps://hostname', credentials: { login: 'login', password: 'pass' }) do |x|
     x.chdir 'remote-src-path'
@@ -28,6 +29,37 @@ XFTP.start('ftps://hostname', credentials: { login: 'login', password: 'pass' })
     x.each_file do |file|
         x.download file
         x.move file, to: File.join('remote-archive-path', file)
+    end
+end
+```
+
+Connection as anon with emtpy password, checking remote dir existence, globbing and getting `StringIO`'s:
+```ruby
+XFTP.start('ftp://hostname') do |x|
+    x.mkdir 'some-dir' unless x.exist? 'some-dir'
+    x.glob '*.cvs' do |filename|
+        io = x.get filename
+    end
+end
+```
+
+Example using `each_io`:
+```ruby
+XFTP.start('ftps://hostname', credentials: { login: 'login', password: 'password' }) do |x|
+    x.chdir 'some-dir'
+    x.each_io do |filename, io|
+        # do smth with it
+    end
+end
+```
+
+Wihout block argument (ntoe that you should rely on you local execution context objects):
+```ruby
+XFTP.start('ftps://hostname', credentials: credentials)
+    chdir 'blahblah'
+    each_file do |filename|
+        download filename, to: File.join('local-dir', filename)
+        move filename, to: File.join('remote-archive-path', filename)
     end
 end
 ```
