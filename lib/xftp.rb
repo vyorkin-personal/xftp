@@ -6,8 +6,6 @@ require 'xftp/version'
 require 'xftp/errors'
 require 'xftp/client'
 
-require_relative 'initializers/i18n'
-
 # Interface unification for FTP/SFTP protocols
 module XFTP
   # Config accessor
