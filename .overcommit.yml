@@ -39,4 +39,3 @@ PostCheckout:
     enabled: true
   GitGuilt:
     enabled: true
-
