@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
   spec.require_path = 'lib'
   spec.license = 'MIT'
 
-  spec.add_development_dependency 'bundler', '~> 1.9', '>= 1.9.0'
+  spec.add_development_dependency 'bundler', '>= 1.7.0'
   spec.add_development_dependency 'rake', '~> 10.0', '>= 10.0'
   spec.add_development_dependency 'rspec', '~> 3.2', '>= 3.2.0'
 
