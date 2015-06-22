@@ -7,7 +7,7 @@ module XFTP
   class Client
     SCHEME_ADAPTERS = {
       ftp:  XFTP::Session::FTP,
-      ftps: XFTP::Session::SFTP
+      sftp: XFTP::Session::SFTP
     }
 
     def self.start(url, settings, &callback)

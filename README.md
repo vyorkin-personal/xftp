@@ -21,7 +21,7 @@ $ gem install xftp
 
 Basic example:
 ```ruby
-XFTP.start('ftps://hostname', credentials: { login: 'login', password: 'pass' }) do |x|
+XFTP.start('sftp://hostname', credentials: { login: 'login', password: 'pass' }) do |x|
     x.chdir 'remote-src-path'
     x.mkdir 'new-remote-dir'
     x.rmdir 'dir-to-remove'
@@ -45,7 +45,7 @@ end
 
 Example using `each_io`:
 ```ruby
-XFTP.start('ftps://hostname', credentials: { login: 'login', password: 'password' }) do |x|
+XFTP.start('sftp://hostname', credentials: { login: 'login', password: 'password' }) do |x|
     x.chdir 'some-dir'
     x.each_io do |filename, io|
         # do smth with it
@@ -55,7 +55,7 @@ end
 
 Wihout block argument (ntoe that you should rely on you local execution context objects):
 ```ruby
-XFTP.start('ftps://hostname', credentials: credentials)
+XFTP.start('sftp://hostname', credentials: credentials)
     chdir 'blahblah'
     each_file do |filename|
         download filename, to: File.join('local-dir', filename)

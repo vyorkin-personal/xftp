@@ -1,5 +1,5 @@
 RSpec.describe XFTP::Client do
-  let(:scheme_adapters) { { ftp: double('ftp'), ftps: double('sftp') } }
+  let(:scheme_adapters) { { ftp: double('ftp'), sftp: double('sftp') } }
   let(:client) { described_class.new(scheme_adapters) }
   let(:url) { "#{scheme}://example.com" }
 
@@ -16,8 +16,8 @@ RSpec.describe XFTP::Client do
       it { is_expected.to yield_with_args(scheme_adapters[scheme]) }
     end
 
-    context 'given uri with ftps scheme' do
-      let(:scheme) { :ftps }
+    context 'given uri with sftp scheme' do
+      let(:scheme) { :sftp }
       it { is_expected.to yield_with_args(scheme_adapters[scheme]) }
     end
   end
