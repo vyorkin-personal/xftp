@@ -1,7 +1,7 @@
 [![Gem](https://img.shields.io/gem/v/xftp.svg)]()
 [![Gem](https://img.shields.io/gem/dtv/xftp.svg)]()
 [![Dependency Status](https://gemnasium.com/vyorkin-personal/xftp.svg)](https://gemnasium.com/vyorkin-personal/xftp)
-[![Build Status](https://travis-ci.org/vyorkin/xftp.svg)](https://travis-ci.org/vyorkin/xftp)
+[![Build Status](https://travis-ci.org/vyorkin-personal/xftp.svg)](https://travis-ci.org/vyorkin/xftp)
 
 # xftp
 
