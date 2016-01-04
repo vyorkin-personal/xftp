@@ -56,7 +56,7 @@ XFTP.start('sftp://hostname', credentials: { login: 'login', password: 'password
 end
 ```
 
-Wihout block argument (ntoe that you should rely on you local execution context objects):
+Without block argument (note that you shouldn't refer to local scope objects):
 ```ruby
 XFTP.start('sftp://hostname', credentials: credentials)
     chdir 'blahblah'
